@@ -24,6 +24,7 @@ const Viewremedy = props => {
     {
       id: '2',
       title: 'Stomach Pain Remedy',
+      //Commit
       description: 'Remove Stomach pain',
       disease: 'for Stomach pain',
     },
