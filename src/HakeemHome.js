@@ -110,7 +110,7 @@ const HakeemHhome = props => {
             <Text style={{color: 'black', marginTop: 10}}>Add Remedy</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => props.navigation.navigate('ViewRemedy')}
+            onPress={() => props.navigation.navigate('ViewRemedy', {id, name})}
             style={{
               flexDirection: 'column',
               alignItems: 'center',

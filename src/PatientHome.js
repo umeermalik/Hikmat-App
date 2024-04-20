@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {SliderBox} from 'react-native-image-slider-box';
-// import StarRating from 'react-native-star-rating';
+import StarRating from 'react-native-star-rating';
 
 const PatienHome = props => {
   const images = [
@@ -97,14 +97,14 @@ const PatienHome = props => {
                     <Text style={styles.remedyTitle}>{item.disease}</Text>
                     <Text style={styles.description}>{item.description}</Text>
 
-                    {/* <StarRating
+                    <StarRating
                       disabled={false}
                       maxStars={5}
-                      rating={item.rating}
+                      rating={4}
                       starSize={20}
                       fullStarColor={'gold'}
                       emptyStarColor={'gray'}
-                    /> */}
+                    />
                   </View>
                 </TouchableOpacity>
               </View>
