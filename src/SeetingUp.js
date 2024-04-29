@@ -1,12 +1,72 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import CustomDropdown from './custompicker';
+import Api from './Api';
 
 const Setttingup = props => {
   const [disease, setDisease] = useState([]); // Array for diseases
   const [selectedDisease, setSelectedDisease] = useState([]); // Array for selected diseases
   const [gender, setGender] = useState('Male'); // Default value for gender
+  const [namee, setnames] = useState([]);
+  const [data, setdata] = useState([]);
+
+  useEffect(() => {
+    alldisease();
+  }, []);
+
+  const alldisease = async () => {
+    try {
+      const url = `${Api}/Addnushka/showAllDisease`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setDisease(data);
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+  const getNuskha = async () => {
+    try {
+      const diseaseIdString = selectedDisease.join(',');
+      console.warn(diseaseIdString);
+
+      const url = `${Api}/Addnushka/SearchNushka?diseaseIds=${encodeURIComponent(
+        diseaseIdString,
+      )}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch data'); // Handle non-200 response
+      }
+
+      const responseData = await response.json();
+
+      if (responseData && responseData.length > 0) {
+        // Navigate to PatientHome screen with the fetched data
+        props.navigation.navigate('PatientHome', {data: responseData});
+      } else {
+        // Show alert if no data is returned
+        Alert.alert('No information found');
+        console.error('No information found');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -52,9 +112,7 @@ const Setttingup = props => {
         </View>
 
         {/* Done Button */}
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('PatientHome')}
-          style={styles.button}>
+        <TouchableOpacity onPress={getNuskha} style={styles.button}>
           <Text style={styles.buttonText}>Done</Text>
         </TouchableOpacity>
       </View>

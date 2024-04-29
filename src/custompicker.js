@@ -38,23 +38,27 @@ const CustomDropdown = ({
       <Pressable
         onPress={() => setIsDropdownOpen(!isDropdownOpen)}
         style={{
-          backgroundColor: 'green',
+          backgroundColor: 'white',
+          elevation: 5,
+          borderBlockColor: 'black',
+          borderColor: 'black',
+
           borderRadius: 5,
           padding: 14,
-          shadowColor: '#000',
+          shadowColor: 'black',
           shadowOffset: {
             width: 0,
             height: 1,
           },
-          shadowOpacity: 0.2,
+          shadowOpacity: 1,
           shadowRadius: 1.41,
-          elevation: 1,
+
           justifyContent: 'space-between',
           flexDirection: 'row',
           alignItems: 'center',
           width: 200,
         }}>
-        <Text style={{fontSize: 14}}>
+        <Text style={{fontSize: 14, color: 'black'}}>
           {selectedValues.length
             ? selectedValues
                 .map(

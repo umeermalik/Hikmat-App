@@ -12,41 +12,12 @@ import {SliderBox} from 'react-native-image-slider-box';
 import StarRating from 'react-native-star-rating';
 
 const PatienHome = props => {
+  const {data} = props.route.params;
+  // console.log(name);
+
   const images = [
     require('../src/assets/1600w-o3BuvnPgn2s.webp'),
     require('../src/assets/images.png'),
-  ];
-  const data = [
-    {
-      id: '1',
-      title: 'Hairfall Remedy',
-      description: 'Makes Hair strong and healthy',
-      disease: 'For hairfall',
-    },
-    {
-      id: '2',
-      title: 'Stomach Pain Remedy',
-      description: 'Remove Stomach pain',
-      disease: 'For Stomach pain',
-    },
-    {
-      id: '3',
-      title: 'For Heart problem remedy ',
-      description: 'Helps to control heart problem ',
-      disease: 'For Heart problem',
-    },
-    {
-      id: '4',
-      title: 'For kidney stone remedy',
-      description: 'Remove kidney stone ',
-      disease: 'For kidney stone',
-    },
-    {
-      id: '5',
-      title: 'Diabetes Remedy',
-      description: 'Helps to control Diabetes',
-      disease: 'For Diabetes',
-    },
   ];
 
   return (
@@ -93,9 +64,8 @@ const PatienHome = props => {
                   onPress={() => props.navigation.navigate('Remedy')}
                   style={styles.remedyItemContainer}>
                   <View style={styles.remedyDetailsContainer}>
-                    <Text style={styles.remedyTitle}>{item.title}</Text>
-                    <Text style={styles.remedyTitle}>{item.disease}</Text>
-                    <Text style={styles.description}>{item.description}</Text>
+                    <Text style={styles.remedyTitle}>{item.NuskhaName}</Text>
+                    <Text style={styles.remedyTitle}>{item.DiseaseName}</Text>
 
                     <StarRating
                       disabled={false}
