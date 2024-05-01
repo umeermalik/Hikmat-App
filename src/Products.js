@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,36 +8,56 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-
+import Api from './Api';
+import Imagepath from './Imagepath';
 const ProductDescription = props => {
-  const comments = [
-    {
-      id: '1',
-      title: 'umeraziz803@gmail.com',
-      description:
-        'I used to get a lot of dandruff in my hair, but when I started using this product, all the dandruff is gone.',
-    },
-    {
-      id: '2',
-      title: 'malikumer830@outlook.com',
-      description: 'Very efficient product for weak hair.',
-    },
-  ];
+  const {Nuskhaid} = props.route.params;
+  console.log(Nuskhaid);
+  const [productdata, setproduct] = useState([]);
+  const GetProduct = async () => {
+    try {
+      const url = `${Api}/Addnushka/Getproduct?Nuskaid=${Nuskhaid}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setproduct(data);
+      if (Array.isArray(data) && data.length > 0) {
+        setproduct(data[0]); // Set the first item from the array
+      } else {
+        throw new Error('Product data not found');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+  useEffect(() => {
+    GetProduct();
+  }, []);
+  console.log('Product image URI:', productdata.productimage); // Log the image URI
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require('../src/assets/mughziatOil_1f86d3db-3f35-45c4-b241-8ecf9a1c02ea_1024x1024.webp')}
-        />
-        <View style={styles.productDetails}>
-          <Text style={styles.productText}>Mughziat Hair Oil</Text>
-          <Text style={styles.hakeemName}>Hakeem Zain</Text>
-          <Text style={styles.price}>Price: $999</Text>
-          <Text style={styles.ranking}>⭐️⭐️⭐️⭐️⭐️</Text>
+      {productdata && (
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            source={{uri: Imagepath + productdata.productimage}}
+          />
+
+          <View style={styles.productDetails}>
+            <Text style={styles.productText}>{productdata.Productname}</Text>
+            <Text>{productdata.Productname}</Text>
+            <Text style={styles.price}>Price{productdata.productprice}</Text>
+            <Text style={styles.ranking}>⭐️⭐️⭐️⭐️⭐️</Text>
+          </View>
         </View>
-      </View>
+      )}
       <View style={styles.divider} />
       <View style={styles.iconsContainer}>
         <View style={styles.iconContainer}>
@@ -121,7 +141,7 @@ const styles = StyleSheet.create({
   },
   productText: {
     fontSize: 25,
-    color: '#333',
+    color: 'black',
     fontWeight: 'bold',
   },
   hakeemName: {
@@ -204,7 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     height: 50,
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: '30%',
   },
   addToCartText: {
     fontSize: 20,

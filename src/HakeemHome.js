@@ -134,7 +134,7 @@ const HakeemHhome = props => {
             marginTop: 20,
           }}>
           {/* Second Row */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => props.navigation.navigate('Remedies')}
             style={{
               flexDirection: 'column',
@@ -151,8 +151,8 @@ const HakeemHhome = props => {
               source={require('../src/assets/sales.jpg')}
             />
             <Text style={{color: 'black', marginTop: 10}}>Total Sales</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
             onPress={() => props.navigation.navigate('Remedies')}
             style={{
               flexDirection: 'column',
@@ -168,7 +168,7 @@ const HakeemHhome = props => {
               source={require('../src/assets/buy.jpg')}
             />
             <Text style={{color: 'black', marginTop: 10}}>Buy</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </ScrollView>

@@ -5,11 +5,12 @@ import CustomDropdown from './custompicker';
 import Api from './Api';
 
 const Setttingup = props => {
+  const {id} = props.route.params;
+  // console.log(id);
+
   const [disease, setDisease] = useState([]); // Array for diseases
   const [selectedDisease, setSelectedDisease] = useState([]); // Array for selected diseases
   const [gender, setGender] = useState('Male'); // Default value for gender
-  const [namee, setnames] = useState([]);
-  const [data, setdata] = useState([]);
 
   useEffect(() => {
     alldisease();
@@ -56,7 +57,7 @@ const Setttingup = props => {
 
       if (responseData && responseData.length > 0) {
         // Navigate to PatientHome screen with the fetched data
-        props.navigation.navigate('PatientHome', {data: responseData});
+        props.navigation.navigate('PatientHome', {data: responseData, id});
       } else {
         // Show alert if no data is returned
         Alert.alert('No information found');

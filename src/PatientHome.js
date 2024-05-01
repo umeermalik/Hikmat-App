@@ -12,7 +12,7 @@ import {SliderBox} from 'react-native-image-slider-box';
 import StarRating from 'react-native-star-rating';
 
 const PatienHome = props => {
-  const {data} = props.route.params;
+  const {data, id} = props.route.params;
   // console.log(name);
 
   const images = [
@@ -61,11 +61,28 @@ const PatienHome = props => {
             return (
               <View style={styles.remedyContainer}>
                 <TouchableOpacity
-                  onPress={() => props.navigation.navigate('Remedy')}
+                  onPress={() =>
+                    props.navigation.navigate('Remedy', {
+                      Nuskhaid: item.Nuskhaid,
+                      Nuskhaname: item.NuskhaName,
+                      id,
+                    })
+                  }
                   style={styles.remedyItemContainer}>
                   <View style={styles.remedyDetailsContainer}>
-                    <Text style={styles.remedyTitle}>{item.NuskhaName}</Text>
-                    <Text style={styles.remedyTitle}>{item.DiseaseName}</Text>
+                    <Text style={styles.remedyTitle}>
+                      Nuskhaid:{item.Nuskhaid}
+                    </Text>
+                    <Text style={styles.remedyTitle}>
+                      Disease:{item.DiseaseName}
+                    </Text>
+                    <Text style={styles.remedyTitle}>
+                      Hakeem name:{item.hakeemname}
+                    </Text>
+                    <Text style={styles.remedyTitle}>
+                      {' '}
+                      Nuskha:{item.NuskhaName}
+                    </Text>
 
                     <StarRating
                       disabled={false}

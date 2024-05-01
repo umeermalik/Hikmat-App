@@ -70,6 +70,7 @@ const AddProducts = props => {
       if (response.ok) {
         const data = await response.json();
         console.log('Response data:', data);
+        Alert.alert('product Added');
         props.navigation.navigate('Hakeem home', {id, name});
         // Optionally, navigate to another screen or show success message
       } else {

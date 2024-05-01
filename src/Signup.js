@@ -77,11 +77,11 @@ const Signup = props => {
       <View style={styles.radioContainer}>
         <RadioButton.Group onValueChange={value => setRole(value)} value={role}>
           <View style={styles.radioOption}>
-            <RadioButton value="Hakeem" />
+            <RadioButton value="hakeem" />
             <Text style={styles.radioText}>Hakeem</Text>
           </View>
           <View style={styles.radioOption}>
-            <RadioButton value="Patient" />
+            <RadioButton value="patient" />
             <Text style={styles.radioText}>Patient</Text>
           </View>
         </RadioButton.Group>

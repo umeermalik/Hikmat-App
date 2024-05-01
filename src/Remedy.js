@@ -1,49 +1,120 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  FlatList,
 } from 'react-native';
+import Api from './Api';
+import StarRating from 'react-native-star-rating';
 
 const Remedy = props => {
+  const {id, Nuskhaid, Nuskhaname} = props.route.params;
+  console.log(id, Nuskhaid, Nuskhaname);
+  const [steps, setsteps] = useState([]);
+  const [ingredientdetail, setdetail] = useState([]);
+
+  const GetSteps = async () => {
+    try {
+      const url = `${Api}/Addnushka/GetSteps?Nuskaid=${Nuskhaid}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setsteps(data);
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+  const ingredientsdata = async () => {
+    try {
+      const url = `${Api}/Addnushka/GetIngredients?Nuskaid=${Nuskhaid}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setdetail(data);
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+  useEffect(() => {
+    GetSteps();
+  }, []);
+  useEffect(() => {
+    ingredientsdata();
+  }, []);
+
+  function renderStepItem({item}) {
+    return (
+      <View>
+        <Text style={styles.content}>{item.Nuskhasteps}</Text>
+      </View>
+    );
+  }
+  function ingredients({item}) {
+    return (
+      <View>
+        <Text style={styles.content}>
+          {item.IngredientName}({item.ingredientquantity}
+          {item.ingredientunit})
+        </Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       {/* Heading Text */}
-      <Text style={styles.heading}>Hairfall Remedy</Text>
+      <Text style={styles.heading}>{Nuskhaname}</Text>
 
       {/* Divider Line */}
       <View style={styles.divider} />
 
       {/* Steps */}
       <Text style={styles.subHeading}>Steps</Text>
-      <Text style={styles.content}>1. Take yogurt in a bowl.</Text>
-      <Text style={styles.content}>2. Add olive oil and mix well.</Text>
-      <Text style={styles.content}>
-        3. Separate egg white and add to the mixture.
-      </Text>
-      <Text style={styles.content}>
-        4. Apply on dry hair and leave for 30 minutes before washing off.
-      </Text>
+      <FlatList
+        data={steps}
+        renderItem={renderStepItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
 
       {/* Divider Line */}
       <View style={styles.divider} />
 
       {/* Ingredients */}
       <Text style={styles.subHeading}>Ingredients</Text>
-      <Text style={styles.content}>
-        Yogurt (500ml), Olive oil (10g), Egg (1)
-      </Text>
+      <FlatList
+        data={ingredientdetail}
+        renderItem={ingredients}
+        keyExtractor={(item, index) => index.toString()}
+      />
 
       {/* Divider Line */}
       <View style={styles.divider} />
 
       {/* Ranking */}
       <Text style={styles.subHeading}>Ranking</Text>
-      <Text style={styles.content}>
-        Stars will be shown here to rank this remedy
-      </Text>
+
+      <StarRating
+        disabled={false}
+        maxStars={5}
+        rating={4}
+        starSize={25}
+        fullStarColor={'gold'}
+        emptyStarColor={'black'}
+      />
 
       {/* Divider Line */}
       <View style={styles.divider} />
@@ -66,7 +137,9 @@ const Remedy = props => {
         <Text style={styles.buttonText}>See Comments & Replies</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => props.navigation.navigate('ProductDescription')}
+        onPress={() =>
+          props.navigation.navigate('ProductDescription', {Nuskhaid})
+        }
         style={[styles.button, {width: 200, marginLeft: 150}]}>
         <Text style={styles.buttonText}>See Products</Text>
       </TouchableOpacity>
