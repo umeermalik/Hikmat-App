@@ -9,6 +9,7 @@ import {
 import CustomDropdown from './custompicker';
 import {Button} from 'react-native-paper'; // Removed unused RadioButton import
 import Api from './Api';
+import {RadioButton} from 'react-native-paper';
 
 const Addremedy = props => {
   const {id, name} = props.route.params;
@@ -16,6 +17,10 @@ const Addremedy = props => {
   const [desase, setdeases] = useState([]);
   const [selecteddesase, setselecteddeases] = useState([]);
   const [remedy, setremedy] = useState('');
+  const [publicity, setpublicity] = useState('');
+  const handleGenderChange = value => {
+    setpublicity(value);
+  };
 
   const addingRemedy = async () => {
     var r_idd;
@@ -25,6 +30,7 @@ const Addremedy = props => {
       formData.append('h_id', id);
 
       formData.append('name', remedy);
+      formData.append('publicity', publicity);
       console.log(formData);
 
       const response = await fetch(url, {
@@ -115,6 +121,20 @@ const Addremedy = props => {
           placeholder="Remedy Name"
           onChangeText={text => setremedy(text)}
         />
+        <View style={styles.radioContainer}>
+          <RadioButton.Group
+            onValueChange={handleGenderChange}
+            value={publicity}>
+            <View style={styles.radioOption}>
+              <RadioButton value="public" />
+              <Text style={styles.radioText}>public</Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton value="private" />
+              <Text style={styles.radioText}>private</Text>
+            </View>
+          </RadioButton.Group>
+        </View>
         <TouchableOpacity onPress={addingRemedy} style={styles.addButton}>
           <Text style={styles.buttonText}>Add Ingredients</Text>
         </TouchableOpacity>
@@ -128,6 +148,19 @@ const styles = {
     flex: 1,
     backgroundColor: '#ffffff',
     padding: 20,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  radioText: {
+    fontSize: 18,
+    marginRight: 5,
   },
   title: {
     fontSize: 24,

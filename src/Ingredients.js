@@ -28,7 +28,6 @@ const Addingredients = props => {
       const url = `${Api}/Addnushka/AddIngrdeients`;
       const formData = new FormData();
       formData.append('name', names); // Assuming ingredientname is defined somewhere in your component
-      formData.append('publicity', Publicity); // Assuming gender is defined somewhere in your component
 
       const response = await fetch(url, {
         method: 'POST',
@@ -82,7 +81,19 @@ const Addingredients = props => {
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
-
+  const handleAddIngredient = () => {
+    AddingIngredient()
+      .then(ingredientId => {
+        return addIngredientQuantity(ingredientId);
+      })
+      .then(() => {
+        // Handle success if needed
+        console.log('Both operations completed successfully');
+      })
+      .catch(error => {
+        Alert.alert('Error', error.message);
+      });
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Add Ingredients</Text>
@@ -94,21 +105,9 @@ const Addingredients = props => {
           value={names}
           onChangeText={text => setname(text)}
         />
-        <View style={styles.radioContainer}>
-          <RadioButton.Group onValueChange={handlePublicity} value={Publicity}>
-            <View style={styles.radioOption}>
-              <Text style={styles.radioText}>Private</Text>
-              <RadioButton value="Private" color="#00A040" />
-            </View>
-            <View style={styles.radioOption}>
-              <Text style={styles.radioText}>Public</Text>
-              <RadioButton value="Public" color="#00A040" />
-            </View>
-          </RadioButton.Group>
-        </View>
-        <TouchableOpacity style={styles.addButton} onPress={AddingIngredient}>
+        {/* <TouchableOpacity style={styles.addButton} onPress={AddingIngredient}>
           <Text style={styles.buttonText}>Add Ingredient</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <View style={styles.inputContainer}>
@@ -126,7 +125,7 @@ const Addingredients = props => {
         />
         <TouchableOpacity
           style={styles.addButton}
-          onPress={addIngredientQuantity}>
+          onPress={handleAddIngredient}>
           <Text style={styles.buttonText}>Add Quantity</Text>
         </TouchableOpacity>
       </View>
@@ -154,7 +153,7 @@ const styles = {
     color: '#00A040',
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   input: {
     backgroundColor: '#f2f2f2',
