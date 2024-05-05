@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  ScrollView,
+  Alert,
 } from 'react-native';
 import Api from './Api';
 import StarRating from 'react-native-star-rating';
@@ -13,10 +15,48 @@ import StarRating from 'react-native-star-rating';
 const Remedy = props => {
   const {id, Nuskhaid, Nuskhaname} = props.route.params;
   console.log(id, Nuskhaid, Nuskhaname);
-  const [steps, setsteps] = useState([]);
-  const [ingredientdetail, setdetail] = useState([]);
+  const [rating, setRating] = useState(3);
+  const [steps, setSteps] = useState([]);
+  const [comment, setcomment] = useState();
+  const [ingredientDetail, setIngredientDetail] = useState([]);
 
-  const GetSteps = async () => {
+  const Ratingcomments = async () => {
+    try {
+      const url = `${Api}/Addnushka/ratingcomments`;
+      const formData = new FormData();
+      formData.append('n_id', Nuskhaid);
+      formData.append('u_id', id);
+      formData.append('rating', rating);
+      formData.append('comments', comment);
+
+      console.log(formData);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Response data:', data);
+        Alert.alert('Rating&comments added');
+
+        // Optionally, navigate to another screen or show success message
+      } else {
+        console.log('Request failed with status:', response.status);
+        Alert.alert('Error', 'Failed to add Rating&comments.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+
+  const getSteps = async () => {
     try {
       const url = `${Api}/Addnushka/GetSteps?Nuskaid=${Nuskhaid}`;
       const response = await fetch(url, {
@@ -27,13 +67,14 @@ const Remedy = props => {
       });
       const data = await response.json();
       console.log(data);
-      setsteps(data);
+      setSteps(data);
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
-  const ingredientsdata = async () => {
+
+  const getIngredients = async () => {
     try {
       const url = `${Api}/Addnushka/GetIngredients?Nuskaid=${Nuskhaid}`;
       const response = await fetch(url, {
@@ -44,17 +85,16 @@ const Remedy = props => {
       });
       const data = await response.json();
       console.log(data);
-      setdetail(data);
+      setIngredientDetail(data);
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
+
   useEffect(() => {
-    GetSteps();
-  }, []);
-  useEffect(() => {
-    ingredientsdata();
+    getSteps();
+    getIngredients();
   }, []);
 
   function renderStepItem({item}) {
@@ -64,18 +104,20 @@ const Remedy = props => {
       </View>
     );
   }
-  function ingredients({item}) {
+
+  function renderIngredientItem({item}) {
     return (
       <View>
         <Text style={styles.content}>
-          {item.IngredientName}({item.ingredientquantity}
-          {item.ingredientunit})
+          {item.IngredientName} ({item.ingredientquantity} {item.ingredientunit}
+          )
         </Text>
       </View>
     );
   }
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {/* Heading Text */}
       <Text style={styles.heading}>{Nuskhaname}</Text>
 
@@ -96,8 +138,8 @@ const Remedy = props => {
       {/* Ingredients */}
       <Text style={styles.subHeading}>Ingredients</Text>
       <FlatList
-        data={ingredientdetail}
-        renderItem={ingredients}
+        data={ingredientDetail}
+        renderItem={renderIngredientItem}
         keyExtractor={(item, index) => index.toString()}
       />
 
@@ -106,23 +148,26 @@ const Remedy = props => {
 
       {/* Ranking */}
       <Text style={styles.subHeading}>Ranking</Text>
-
       <StarRating
+        selectedStar={v => setRating(v)}
         disabled={false}
         maxStars={5}
-        rating={4}
+        rating={rating}
         starSize={25}
         fullStarColor={'gold'}
         emptyStarColor={'black'}
       />
 
-      {/* Divider Line */}
       <View style={styles.divider} />
 
-      {/* Search Input */}
       <View style={styles.inputContainer}>
-        <TextInput style={styles.searchInput} placeholder="Search" />
-        <TouchableOpacity style={styles.submitButton}>
+        <TextInput
+          value={comment}
+          style={styles.searchInput}
+          placeholder="Comment"
+          onChangeText={text => setcomment(text)}
+        />
+        <TouchableOpacity onPress={Ratingcomments} style={styles.submitButton}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
@@ -143,7 +188,7 @@ const Remedy = props => {
         style={[styles.button, {width: 200, marginLeft: 150}]}>
         <Text style={styles.buttonText}>See Products</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -156,13 +201,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: 'black', // Text color set to black
+    color: 'black',
   },
   subHeading: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: 'black', // Text color set to black
+    color: 'black',
   },
   searchInput: {
     backgroundColor: 'lightgrey',
@@ -170,19 +215,21 @@ const styles = StyleSheet.create({
     width: '70%',
     borderRadius: 10,
     paddingHorizontal: 10,
-    color: 'black', // Text color set to black
+    color: 'black',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   submitButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#00A040',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    marginLeft: 10,
+    marginTop: -5,
   },
   buttonText: {
     color: 'white',
@@ -198,10 +245,10 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 16,
     marginBottom: 10,
-    color: 'black', // Text color set to black
+    color: 'black',
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#00A040',
     paddingVertical: 10,
     borderRadius: 5,
     marginBottom: 10,

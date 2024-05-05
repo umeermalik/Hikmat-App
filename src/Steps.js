@@ -4,9 +4,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image,
-  Modal,
   TextInput,
+  FlatList,
 } from 'react-native';
 import Api from './Api';
 
@@ -14,14 +13,9 @@ const Steps = props => {
   const {r_id, id, name} = props.route.params;
 
   const [stepText, setStepText] = useState('');
+  const [addedSteps, setAddedSteps] = useState([]);
 
-  const handleAddStep = () => {
-    // Implement logic to handle adding step
-    // For now, let's just log the step text
-    console.log(stepText);
-    setStepText(''); // Clearing input field after adding step
-  };
-  const addsteps = async () => {
+  const handleAddStep = async () => {
     try {
       const url = `${Api}/Addnushka/AddSteps`;
       const formData = new FormData();
@@ -39,7 +33,13 @@ const Steps = props => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('step added');
+        console.log('Step added:', data);
+
+        // Update addedSteps state to include the new step
+        setAddedSteps([...addedSteps, stepText]);
+
+        // Clear input field after adding step
+        setStepText('');
       } else {
         console.log('Request failed with status:', response.status);
       }
@@ -49,9 +49,16 @@ const Steps = props => {
     }
   };
 
+  const renderStepItem = ({item}) => (
+    <View style={styles.stepItem}>
+      <Text>{item}</Text>
+    </View>
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Add Steps</Text>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -59,14 +66,20 @@ const Steps = props => {
           value={stepText}
           onChangeText={text => setStepText(text)}
         />
-        <TouchableOpacity onPress={addsteps} style={styles.addButton}>
+        <FlatList
+          data={addedSteps}
+          renderItem={renderStepItem}
+          keyExtractor={(item, index) => `${item}-${index}`}
+          contentContainerStyle={styles.stepList}
+        />
+        <TouchableOpacity onPress={handleAddStep} style={styles.addButton}>
           <Text style={styles.buttonText}>Add Step</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Render added steps here */}
-      {/* This section can be implemented to display the added steps */}
+      {/* Render added steps using FlatList */}
 
+      {/* Reintegrate the "Done" button */}
       <TouchableOpacity
         onPress={() => props.navigation.navigate('Hakeem home', {id, name})}
         style={[styles.addButton, {marginTop: 20}]}>
@@ -80,7 +93,7 @@ const styles = {
   container: {
     backgroundColor: '#fff',
     padding: 20,
-    flexGrow: 1, // Allowing container to grow in case of small content
+    flexGrow: 1,
   },
   title: {
     fontSize: 24,
@@ -112,6 +125,17 @@ const styles = {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  stepList: {
+    marginTop: 20,
+  },
+  stepItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    marginBottom: 10,
   },
 };
 
