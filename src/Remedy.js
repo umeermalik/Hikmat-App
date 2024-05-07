@@ -18,6 +18,7 @@ const Remedy = props => {
   const [rating, setRating] = useState(3);
   const [steps, setSteps] = useState([]);
   const [comment, setcomment] = useState();
+  const [usage, setusage] = useState();
   const [ingredientDetail, setIngredientDetail] = useState([]);
 
   const Ratingcomments = async () => {
@@ -91,10 +92,27 @@ const Remedy = props => {
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
-
+  const getusage = async () => {
+    try {
+      const url = `${Api}/Addnushka/Getusage?Nuskaid=${Nuskhaid}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setusage(data);
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
   useEffect(() => {
     getSteps();
     getIngredients();
+    getusage();
   }, []);
 
   function renderStepItem({item}) {
@@ -112,6 +130,13 @@ const Remedy = props => {
           {item.IngredientName} ({item.ingredientquantity} {item.ingredientunit}
           )
         </Text>
+      </View>
+    );
+  }
+  function renderUsage({item}) {
+    return (
+      <View>
+        <Text style={styles.content}>{item.Nuskhausage}</Text>
       </View>
     );
   }
@@ -145,6 +170,12 @@ const Remedy = props => {
 
       {/* Divider Line */}
       <View style={styles.divider} />
+      <Text style={styles.subHeading}>Usage</Text>
+      <FlatList
+        data={usage}
+        renderItem={renderUsage}
+        keyExtractor={(item, index) => index.toString()}
+      />
 
       {/* Ranking */}
       <Text style={styles.subHeading}>Ranking</Text>
