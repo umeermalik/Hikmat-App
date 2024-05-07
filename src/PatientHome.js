@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import StarRating from 'react-native-star-rating';
 
 const PatienHome = props => {
   const {data, id} = props.route.params;
+  console.log(data);
 
   // Define images for the slider
   const images = [
@@ -78,7 +79,7 @@ const PatienHome = props => {
               <StarRating
                 disabled={false}
                 maxStars={5}
-                rating={4}
+                rating={item.AverageRating}
                 starSize={20}
                 fullStarColor={'gold'}
                 emptyStarColor={'gray'}
