@@ -77,7 +77,9 @@ const Viewremedy = props => {
           <Text>{item.id}</Text>
           <Text>Hakeem:{name}</Text>
           <TouchableOpacity
-            onPress={() => props.navigation.navigate('AddProducts')}
+            onPress={() =>
+              props.navigation.navigate('comments', {Id: item.id, name, id})
+            }
             style={styles.buttonContainer}>
             <Text style={styles.AbuttonText}>See Comments & replies</Text>
           </TouchableOpacity>

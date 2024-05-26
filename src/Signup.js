@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import Api from './Api';
@@ -101,30 +102,38 @@ const Signup = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f8f8',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#00A040',
   },
   input: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginBottom: 20,
     width: '100%',
     height: 50,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   radioContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    justifyContent: 'space-around',
+    width: '100%',
   },
   radioOption: {
     flexDirection: 'row',
@@ -142,10 +151,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: 10,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   loginLink: {
     marginTop: 10,

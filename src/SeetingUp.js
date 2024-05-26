@@ -85,32 +85,6 @@ const Setttingup = props => {
         />
 
         {/* Gender selection */}
-        <View
-          style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-          <Text style={styles.label}>Gender</Text>
-          <View style={styles.radioContainer}>
-            {/* Radio button for Male */}
-            <View style={styles.radioButton}>
-              <RadioButton
-                value="Male"
-                status={gender === 'Male' ? 'checked' : 'unchecked'}
-                onPress={() => setGender('Male')}
-                color="#00A040"
-              />
-              <Text style={styles.radioText}>Male</Text>
-            </View>
-            {/* Radio button for Female */}
-            <View style={styles.radioButton}>
-              <RadioButton
-                value="Female"
-                status={gender === 'Female' ? 'checked' : 'unchecked'}
-                onPress={() => setGender('Female')}
-                color="#00A040"
-              />
-              <Text style={styles.radioText}>Female</Text>
-            </View>
-          </View>
-        </View>
 
         {/* Done Button */}
         <TouchableOpacity onPress={getNuskha} style={styles.button}>

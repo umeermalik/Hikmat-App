@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   FlatList,
+  Alert,
   StyleSheet,
 } from 'react-native';
 import Api from './Api';
@@ -29,7 +30,6 @@ const Steps = props => {
         body: formData,
         headers: {
           Accept: 'application/json',
-          // Add any additional headers if needed
         },
       });
 
@@ -37,11 +37,9 @@ const Steps = props => {
         const data = await response.json();
         console.log('Step added:', data);
 
-        // Update addedSteps state to include the new step
         const newStep = {step: stepText, usage: usage};
         setAddedSteps([...addedSteps, newStep]);
 
-        // Clear input fields after adding step
         setStepText('');
         setUsage('');
       } else {
@@ -53,7 +51,7 @@ const Steps = props => {
     }
   };
 
-  const handleAddusage = async () => {
+  const handleAddUsage = async () => {
     try {
       const url = `${Api}/Addnushka/AddUsage`;
       const formData = new FormData();
@@ -66,18 +64,13 @@ const Steps = props => {
         body: formData,
         headers: {
           Accept: 'application/json',
-          // Add any additional headers if needed
         },
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log('usage added:', data);
+        console.log('Usage added:', data);
         setUsage(data);
-
-        // Update addedSteps state to include the new step
-
-        // Clear input fields after adding step
       } else {
         console.log('Request failed with status:', response.status);
       }
@@ -89,7 +82,7 @@ const Steps = props => {
 
   const renderStepItem = ({item}) => (
     <View style={styles.stepItem}>
-      <Text style={{color: 'black'}}>{item.step}</Text>
+      <Text style={styles.stepText}>{item.step}</Text>
     </View>
   );
 
@@ -115,18 +108,19 @@ const Steps = props => {
           keyExtractor={(item, index) => `${item.step}-${index}`}
           contentContainerStyle={styles.stepList}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Add Usage"
           value={usage}
           onChangeText={text => setUsage(text)}
         />
-        <TouchableOpacity onPress={handleAddusage} style={styles.addButton}>
+
+        <TouchableOpacity onPress={handleAddUsage} style={styles.addButton}>
           <Text style={styles.buttonText}>Add Usage</Text>
         </TouchableOpacity>
       </View>
 
-      {/* "Done" button to navigate back */}
       <TouchableOpacity
         onPress={() => props.navigation.navigate('Hakeem home', {id, name})}
         style={styles.doneButton}>
@@ -138,12 +132,12 @@ const Steps = props => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f8f8',
     padding: 20,
     flexGrow: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
@@ -153,13 +147,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
+    borderColor: 'black',
     borderRadius: 10,
-    marginTop: 10,
     paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 16,
+    marginBottom: 10,
   },
   addButton: {
     backgroundColor: '#00A040',
@@ -169,7 +164,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   doneButton: {
-    backgroundColor: '#00A040',
+    backgroundColor: '#007BFF',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -190,6 +185,11 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 10,
     marginBottom: 10,
+    backgroundColor: '#e9ffe8',
+  },
+  stepText: {
+    color: '#333',
+    fontSize: 16,
   },
 });
 

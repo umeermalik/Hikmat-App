@@ -10,10 +10,13 @@ import {
 } from 'react-native';
 import Api from './Api';
 import Imagepath from './Imagepath';
+import StarRating from 'react-native-star-rating';
+
 const ProductDescription = props => {
   const {Nuskhaid} = props.route.params;
   console.log(Nuskhaid);
   const [productdata, setproduct] = useState([]);
+  const [rating, setRating] = useState(3);
   const GetProduct = async () => {
     try {
       const url = `${Api}/Addnushka/Getproduct?Nuskaid=${Nuskhaid}`;
@@ -39,8 +42,8 @@ const ProductDescription = props => {
   useEffect(() => {
     GetProduct();
   }, []);
-  console.log('Product image URI:', productdata.productimage); // Log the image URI
-
+  // console.log('Product image URI:', productdata.productimage); // Log the image URI
+  console.log(productdata);
   return (
     <View style={styles.container}>
       {productdata && (
@@ -54,7 +57,6 @@ const ProductDescription = props => {
             <Text style={styles.productText}>{productdata.Productname}</Text>
             <Text>{productdata.Productname}</Text>
             <Text style={styles.price}>Price{productdata.productprice}</Text>
-            <Text style={styles.ranking}>⭐️⭐️⭐️⭐️⭐️</Text>
           </View>
         </View>
       )}
@@ -88,7 +90,16 @@ const ProductDescription = props => {
       </Text>
       <View style={styles.divider} />
       <Text>Add Ranking </Text>
-      <Text style={styles.rankings}>⭐️⭐️⭐️⭐️⭐️</Text>
+      <StarRating
+        selectedStar={v => setRating(v)}
+        disabled={false}
+        maxStars={5}
+        rating={rating}
+        starSize={25}
+        fullStarColor={'gold'}
+        emptyStarColor={'black'}
+      />
+
       <View style={styles.divider} />
       {/* <Text style={styles.productBenefits}>
         Haldi 20 gram, zaytoon 60 gram.
@@ -107,7 +118,15 @@ const ProductDescription = props => {
         <Text style={styles.replyText}>See comment & Reply</Text>
       </TouchableOpacity> */}
       <TouchableOpacity
-        onPress={() => props.navigation.navigate('Buy')}
+        onPress={() =>
+          props.navigation.navigate('Buy', {
+            price: productdata.productprice,
+            name: productdata.Productname,
+            image: productdata.productimage,
+            pid: productdata.productid,
+            nid: Nuskhaid,
+          })
+        }
         style={styles.addToCart}>
         <Text style={styles.addToCartText}>Add To Cart</Text>
       </TouchableOpacity>

@@ -178,7 +178,25 @@ const CustomDropdown = ({
                 onPress={() => {
                   setIsDropdownOpen(!isDropdownOpen);
                 }}>
-                <Text style={{alignSelf: 'center'}}>Close</Text>
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                    backgroundColor: '#ff4757', // A more eye-catching color
+                    width: '80%', // Adjusted width for better layout
+                    padding: 10, // Add padding for better click area
+                    textAlign: 'center', // Center the text
+                    color: 'white',
+                    borderRadius: 25, // Rounded corners
+                    borderWidth: 1, // Optional: Add a border
+                    borderColor: '#ff6b81', // Optional: Border color
+                    shadowColor: '#000', // Optional: Add shadow for depth
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.8,
+                    shadowRadius: 2,
+                    elevation: 5, // Elevation for Android shadow
+                  }}>
+                  Close
+                </Text>
               </Pressable>
             </View>
           </View>

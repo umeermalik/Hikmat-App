@@ -8,14 +8,17 @@ import {
   StyleSheet,
   StatusBar, // Import StatusBar
 } from 'react-native';
+import Imagepath from './Imagepath';
 
 const Buy = props => {
+  const {pid, nid, price, name, image} = props.route.params;
+  console.log(price, name, image, pid, nid);
   const [data, setData] = useState([
     {
-      id: '1',
-      title: 'Diabetes remedy',
+      pid,
+      name,
       description: 'Diabetes remedy',
-      price: '200',
+      price,
       quantity: 0,
     },
   ]);
@@ -45,14 +48,11 @@ const Buy = props => {
         ItemSeparatorComponent={() => <View style={{height: 10}} />}
         renderItem={({item, index}) => (
           <View style={styles.itemContainer}>
-            <Image
-              style={styles.image}
-              source={require('../src/assets/mughziatOil_1f86d3db-3f35-45c4-b241-8ecf9a1c02ea_1024x1024.webp')}
-            />
+            <Image style={styles.image} source={{uri: Imagepath + image}} />
             <View style={styles.itemDetails}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>Hakeem Suleman</Text>
-              <Text style={styles.price}>Price: ${parseInt(item.price)}</Text>
+              <Text style={styles.price}>Price: ${parseInt(price)}</Text>
               <View style={styles.counterContainer}>
                 <TouchableOpacity
                   style={styles.counterButton}

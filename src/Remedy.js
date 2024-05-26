@@ -14,11 +14,10 @@ import StarRating from 'react-native-star-rating';
 
 const Remedy = props => {
   const {id, Nuskhaid, Nuskhaname} = props.route.params;
-  console.log(id, Nuskhaid, Nuskhaname);
   const [rating, setRating] = useState(3);
   const [steps, setSteps] = useState([]);
-  const [comment, setcomment] = useState();
-  const [usage, setusage] = useState();
+  const [comment, setComment] = useState('');
+  const [usage, setUsage] = useState([]);
   const [ingredientDetail, setIngredientDetail] = useState([]);
 
   const Ratingcomments = async () => {
@@ -29,8 +28,6 @@ const Remedy = props => {
       formData.append('u_id', id);
       formData.append('rating', rating);
       formData.append('comments', comment);
-
-      console.log(formData);
 
       const response = await fetch(url, {
         method: 'POST',
@@ -43,13 +40,9 @@ const Remedy = props => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Response data:', data);
-        Alert.alert('Rating&comments added');
-
-        // Optionally, navigate to another screen or show success message
+        Alert.alert('Success', 'Rating and comments added successfully');
       } else {
-        console.log('Request failed with status:', response.status);
-        Alert.alert('Error', 'Failed to add Rating&comments.');
+        Alert.alert('Error', 'Failed to add rating and comments.');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -67,7 +60,6 @@ const Remedy = props => {
         },
       });
       const data = await response.json();
-      console.log(data);
       setSteps(data);
     } catch (error) {
       console.error('Error:', error);
@@ -85,14 +77,14 @@ const Remedy = props => {
         },
       });
       const data = await response.json();
-      console.log(data);
       setIngredientDetail(data);
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
-  const getusage = async () => {
+
+  const getUsage = async () => {
     try {
       const url = `${Api}/Addnushka/Getusage?Nuskaid=${Nuskhaid}`;
       const response = await fetch(url, {
@@ -102,65 +94,45 @@ const Remedy = props => {
         },
       });
       const data = await response.json();
-      console.log(data);
-      setusage(data);
+      setUsage(data);
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
+
   useEffect(() => {
     getSteps();
     getIngredients();
-    getusage();
+    getUsage();
   }, []);
 
-  function renderStepItem({item}) {
-    return (
-      <View>
-        <Text style={styles.content}>{item.Nuskhasteps}</Text>
-      </View>
-    );
-  }
+  const renderStepItem = ({item}) => (
+    <View style={styles.listItem}>
+      <Text style={styles.listText}>{item.Nuskhasteps}</Text>
+    </View>
+  );
 
-  function renderIngredientItem({item}) {
-    return (
-      <View>
-        <Text style={styles.content}>
-          {item.IngredientName} ({item.ingredientquantity} {item.ingredientunit}
-          )
-        </Text>
-      </View>
-    );
-  }
-  function renderUsage({item}) {
-    return (
-      <View>
-        <Text style={styles.content}>{item.Nuskhausage}</Text>
-      </View>
-    );
-  }
+  const renderIngredientItem = ({item}) => (
+    <View style={styles.listItem}>
+      <Text style={styles.listText}>
+        {item.IngredientName} ({item.ingredientquantity} {item.ingredientunit})
+      </Text>
+    </View>
+  );
+
+  const renderUsageItem = ({item}) => (
+    <View style={styles.listItem}>
+      <Text style={styles.listText}>{item.Nuskhausage}</Text>
+    </View>
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Heading Text */}
       <Text style={styles.heading}>{Nuskhaname}</Text>
 
-      {/* Divider Line */}
       <View style={styles.divider} />
 
-      {/* Steps */}
-      <Text style={styles.subHeading}>Steps</Text>
-      <FlatList
-        data={steps}
-        renderItem={renderStepItem}
-        keyExtractor={(item, index) => index.toString()}
-      />
-
-      {/* Divider Line */}
-      <View style={styles.divider} />
-
-      {/* Ingredients */}
       <Text style={styles.subHeading}>Ingredients</Text>
       <FlatList
         data={ingredientDetail}
@@ -168,25 +140,35 @@ const Remedy = props => {
         keyExtractor={(item, index) => index.toString()}
       />
 
-      {/* Divider Line */}
       <View style={styles.divider} />
-      <Text style={styles.subHeading}>Usage</Text>
+
+      <Text style={styles.subHeading}>Steps</Text>
       <FlatList
-        data={usage}
-        renderItem={renderUsage}
+        data={steps}
+        renderItem={renderStepItem}
         keyExtractor={(item, index) => index.toString()}
       />
 
-      {/* Ranking */}
-      <Text style={styles.subHeading}>Ranking</Text>
+      <View style={styles.divider} />
+
+      <Text style={styles.subHeading}>Usage</Text>
+      <FlatList
+        data={usage}
+        renderItem={renderUsageItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+
+      <View style={styles.divider} />
+
+      <Text style={styles.subHeading}>Rating</Text>
       <StarRating
-        selectedStar={v => setRating(v)}
+        selectedStar={setRating}
         disabled={false}
         maxStars={5}
         rating={rating}
-        starSize={25}
+        starSize={30}
         fullStarColor={'gold'}
-        emptyStarColor={'black'}
+        emptyStarColor={'gray'}
       />
 
       <View style={styles.divider} />
@@ -194,21 +176,20 @@ const Remedy = props => {
       <View style={styles.inputContainer}>
         <TextInput
           value={comment}
-          style={styles.searchInput}
-          placeholder="Comment"
-          onChangeText={text => setcomment(text)}
+          style={styles.commentInput}
+          placeholder="Write a comment..."
+          placeholderTextColor="gray"
+          onChangeText={setComment}
         />
         <TouchableOpacity onPress={Ratingcomments} style={styles.submitButton}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Divider Line */}
       <View style={styles.divider} />
 
-      {/* Navigation Buttons */}
       <TouchableOpacity
-        onPress={() => props.navigation.navigate('Forums')}
+        onPress={() => props.navigation.navigate('Forums', {Nuskhaid, id})}
         style={styles.button}>
         <Text style={styles.buttonText}>See Comments & Replies</Text>
       </TouchableOpacity>
@@ -216,7 +197,7 @@ const Remedy = props => {
         onPress={() =>
           props.navigation.navigate('ProductDescription', {Nuskhaid})
         }
-        style={[styles.button, {width: 200, marginLeft: 150}]}>
+        style={[styles.button, styles.secondaryButton]}>
         <Text style={styles.buttonText}>See Products</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -226,27 +207,50 @@ const Remedy = props => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#f7f7f7',
   },
   heading: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
-    color: 'black',
+    color: '#333',
+    marginBottom: 20,
   },
   subHeading: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 10,
-    color: 'black',
   },
-  searchInput: {
-    backgroundColor: 'lightgrey',
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginVertical: 20,
+  },
+  listItem: {
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
     marginBottom: 10,
-    width: '70%',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    color: 'black',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  listText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  commentInput: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    color: '#333',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -254,35 +258,35 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#00A040',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 10,
-    marginTop: -5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-    marginBottom: 20,
-  },
-  content: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: 'black',
   },
   button: {
     backgroundColor: '#00A040',
-    paddingVertical: 10,
+    paddingVertical: 15,
     borderRadius: 5,
+    alignItems: 'center',
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  secondaryButton: {
+    width: 200,
+    marginLeft: 150,
   },
 });
 

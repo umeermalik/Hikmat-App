@@ -16,6 +16,7 @@ import Setttingup from './src/SeetingUp';
 import ProductDescription from './src/Products';
 import Buy from './src/Buy';
 import Signup from './src/Signup';
+import SeeAllcomentrate from './src/SeeAllcomentrate';
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
@@ -36,6 +37,11 @@ const App = () => {
         <Stack.Screen
           name="Hakeem home"
           component={Hakee_Home}
+          screenOptions={{HeaderShown: false}}
+        />
+        <Stack.Screen
+          name="comments"
+          component={SeeAllcomentrate}
           screenOptions={{HeaderShown: false}}
         />
 

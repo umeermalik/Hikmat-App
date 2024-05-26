@@ -1,178 +1,156 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
   Image,
-  Modal,
+  StyleSheet,
 } from 'react-native';
 
 const HakeemHhome = props => {
   const {name, id} = props.route.params;
 
-  console.log(name, id);
-  // const id=id;
-  //  const { r_id} = props.route.params;
-
-  // const { email, id } = props.route.params;
-  // console.warn(id);
-
-  // const [modal, setModal] = useState(false);
   return (
-    <ScrollView>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#00A040',
-          height: 260,
-          borderBottomLeftRadius: 60,
-          borderBottomRightRadius: 60,
-          flexDirection: 'row',
-        }}>
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.header}>
         <View>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 45,
-              marginLeft: 20,
-              marginTop: 10,
-              fontFamily: 'Cursive',
-            }}>
-            Hikmat
-          </Text>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 16,
-              marginLeft: 20,
-              marginTop: 60,
-              fontSize: 30,
-              fontWeight: '100',
-              fontFamily: 'Arial',
-            }}>
-            Welcome,
-          </Text>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 16,
-              marginLeft: 20,
-              marginTop: 10,
-              fontSize: 30,
-              fontWeight: '100',
-            }}>
-            {name}
-          </Text>
+          <Text style={styles.headerTitle}>Hikmat</Text>
+          <Text style={styles.headerSubtitle}>Welcome,</Text>
+          <Text style={styles.headerUsername}>{name}</Text>
         </View>
         <TouchableOpacity
           onPress={() => props.navigation.navigate('Login')}
-          style={{
-            position: 'absolute',
-            top: 20,
-            right: 20,
-            backgroundColor: 'black',
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text style={{color: 'white', fontSize: 14}}>Log out</Text>
+          style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          flex: 1,
-          width: '100%', // Set the width to 80% of the screen width
-          height: '50%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          {/* First Row */}
+      <View style={styles.content}>
+        <View style={styles.row}>
           <TouchableOpacity
             onPress={() => props.navigation.navigate('Add Nushka', {id, name})}
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: 90,
-              marginRight: 20, // Added margin to create equal spacing
-            }}>
+            style={styles.option}>
             <Image
-              style={{
-                width: 100, // Adjusted size
-                height: 100, // Adjusted size
-                borderRadius: 60,
-              }}
+              style={styles.optionImage}
               source={require('../src/assets/addRemedy.jpg')}
             />
-            <Text style={{color: 'black', marginTop: 10}}>Add Remedy</Text>
+            <Text style={styles.optionText}>Add Remedy</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => props.navigation.navigate('ViewRemedy', {id, name})}
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: 90,
-            }}>
+            style={styles.option}>
             <Image
-              style={{
-                width: 100, // Adjusted size
-                height: 100, // Adjusted size
-                borderRadius: 60,
-              }}
+              style={styles.optionImage}
               source={require('../src/assets/buy.jpg')}
             />
-            <Text style={{color: 'black', marginTop: 10}}>View Remedy</Text>
+            <Text style={styles.optionText}>View Remedy</Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 20,
-          }}>
-          {/* Second Row */}
-          {/* <TouchableOpacity
+        {/* Uncomment and style the second row as needed */}
+        {/* <View style={styles.row}>
+          <TouchableOpacity
             onPress={() => props.navigation.navigate('Remedies')}
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: 20,
-              marginRight: 20, // Added margin to create equal spacing
-            }}>
+            style={styles.option}>
             <Image
-              style={{
-                width: 100, // Adjusted size
-                height: 100, // Adjusted size
-                borderRadius: 60,
-              }}
+              style={styles.optionImage}
               source={require('../src/assets/sales.jpg')}
             />
-            <Text style={{color: 'black', marginTop: 10}}>Total Sales</Text>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity
+            <Text style={styles.optionText}>Total Sales</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => props.navigation.navigate('Remedies')}
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: 20,
-            }}>
+            style={styles.option}>
             <Image
-              style={{
-                width: 100, // Adjusted size
-                height: 100, // Adjusted size
-                borderRadius: 60,
-              }}
+              style={styles.optionImage}
               source={require('../src/assets/buy.jpg')}
             />
-            <Text style={{color: 'black', marginTop: 10}}>Buy</Text>
-          </TouchableOpacity> */}
-        </View>
+            <Text style={styles.optionText}>Buy</Text>
+          </TouchableOpacity>
+        </View> */}
       </View>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: '#f8f8f8',
+  },
+  header: {
+    backgroundColor: '#00A040',
+    height: 260,
+    borderBottomLeftRadius: 60,
+    borderBottomRightRadius: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 45,
+    fontFamily: 'Cursive',
+    marginTop: 10,
+  },
+  headerSubtitle: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: '100',
+    fontFamily: 'Arial',
+    marginTop: 60,
+  },
+  headerUsername: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: '100',
+    marginTop: 10,
+  },
+  logoutButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: 'black',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  content: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: -50,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 20,
+  },
+  option: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: 90,
+  },
+  optionImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 60,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  optionText: {
+    color: 'black',
+    marginTop: 10,
+    fontSize: 16,
+  },
+});
 
 export default HakeemHhome;

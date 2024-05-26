@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Alert,
 } from 'react-native';
 import CustomDropdown from './custompicker';
-import {Button} from 'react-native-paper'; // Removed unused RadioButton import
-import Api from './Api';
 import {RadioButton} from 'react-native-paper';
+import Api from './Api';
 
 const Addremedy = props => {
   const {id, name} = props.route.params;
@@ -18,20 +18,18 @@ const Addremedy = props => {
   const [selecteddesase, setselecteddeases] = useState([]);
   const [remedy, setremedy] = useState('');
   const [publicity, setpublicity] = useState('');
+
   const handleGenderChange = value => {
     setpublicity(value);
   };
 
   const addingRemedy = async () => {
-    var r_idd;
     try {
       const url = `${Api}/Addnushka/AddRemedy`;
       const formData = new FormData();
       formData.append('h_id', id);
-
       formData.append('name', remedy);
       formData.append('publicity', publicity);
-      console.log(formData);
 
       const response = await fetch(url, {
         method: 'POST',
@@ -48,8 +46,6 @@ const Addremedy = props => {
           const formData = new FormData();
           formData.append('n_id', data);
           formData.append('d_id', selectedDisease);
-
-          console.log(formData);
 
           const response = await fetch(url, {
             method: 'POST',
@@ -69,7 +65,6 @@ const Addremedy = props => {
         }
 
         console.log('Response data:', data);
-
         props.navigation.navigate('Ingredients', {data, id, name});
       } else {
         console.log('Request failed with status:', response.status);
@@ -113,7 +108,7 @@ const Addremedy = props => {
           valueKey="id"
           placeholder="Select Disease"
           height={350}
-          width="70%"
+          width="100%"
         />
         <TextInput
           style={styles.input}
@@ -127,11 +122,11 @@ const Addremedy = props => {
             value={publicity}>
             <View style={styles.radioOption}>
               <RadioButton value="public" />
-              <Text style={styles.radioText}>public</Text>
+              <Text style={styles.radioText}>Public</Text>
             </View>
             <View style={styles.radioOption}>
               <RadioButton value="private" />
-              <Text style={styles.radioText}>private</Text>
+              <Text style={styles.radioText}>Private</Text>
             </View>
           </RadioButton.Group>
         </View>
@@ -149,6 +144,25 @@ const styles = {
     backgroundColor: '#ffffff',
     padding: 20,
   },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#00A040',
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 15,
+    fontSize: 16,
+  },
   radioContainer: {
     flexDirection: 'row',
     marginBottom: 15,
@@ -160,34 +174,23 @@ const styles = {
   },
   radioText: {
     fontSize: 18,
-    marginRight: 5,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#00A040',
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#f2f2f2',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingLeft: 10,
-    marginBottom: 15,
+    marginLeft: 5,
   },
   addButton: {
     backgroundColor: '#00A040',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonText: {
     color: '#ffffff',
     fontSize: 18,
+    fontWeight: 'bold',
   },
 };
 
