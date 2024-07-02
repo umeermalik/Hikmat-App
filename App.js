@@ -17,6 +17,12 @@ import ProductDescription from './src/Products';
 import Buy from './src/Buy';
 import Signup from './src/Signup';
 import SeeAllcomentrate from './src/SeeAllcomentrate';
+import Reply from './src/Reply';
+import Updateingredient from './src/Updateingredients';
+import RemedyUpdateAndViewsite from './src/RemedyUpdateAndViewsite';
+import Chat from './src/Chat';
+import ChatList from './src/AllChats';
+import ingredientRating from './src/ingredientsrating';
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
@@ -35,6 +41,21 @@ const App = () => {
           option={{HeaderShown: false}}
         />
         <Stack.Screen
+          name="ingredientRating"
+          component={ingredientRating}
+          option={{HeaderShown: false}}
+        />
+        <Stack.Screen
+          name="Reply"
+          component={Reply}
+          option={{HeaderShown: false}}
+        />
+        <Stack.Screen
+          name="update"
+          component={Updateingredient}
+          option={{HeaderShown: false}}
+        />
+        <Stack.Screen
           name="Hakeem home"
           component={Hakee_Home}
           screenOptions={{HeaderShown: false}}
@@ -44,7 +65,6 @@ const App = () => {
           component={SeeAllcomentrate}
           screenOptions={{HeaderShown: false}}
         />
-
         <Stack.Screen
           name="Add Nushka"
           component={Addremedy}
@@ -75,9 +95,10 @@ const App = () => {
           component={Steps}
           // screenOptions={{HeaderShown: false}}
         />
+        <Stack.Screen name="ViewRemedy" component={Viewremedy} />
         <Stack.Screen
-          name="ViewRemedy"
-          component={Viewremedy}
+          name="RemedyUpdateAndViewsite"
+          component={RemedyUpdateAndViewsite}
           // screenOptions={{HeaderShown: false}}
         />
         <Stack.Screen
@@ -103,6 +124,16 @@ const App = () => {
         <Stack.Screen
           name="ProductDescription"
           component={ProductDescription}
+          // options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Chat"
+          component={Chat}
+          // options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Chatlist"
+          component={ChatList}
           // options={{headerShown: false}}
         />
       </Stack.Navigator>

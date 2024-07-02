@@ -6,11 +6,13 @@ import Api from './Api';
 
 const Setttingup = props => {
   const {id} = props.route.params;
-  // console.log(id);
 
-  const [disease, setDisease] = useState([]); // Array for diseases
-  const [selectedDisease, setSelectedDisease] = useState([]); // Array for selected diseases
-  const [gender, setGender] = useState('Male'); // Default value for gender
+  const [disease, setDisease] = useState([]);
+  const [selectedDisease, setSelectedDisease] = useState([]);
+  const [datanushka, setdata] = useState({
+    orderbynushka: [],
+    orderbyhakem: [],
+  });
 
   useEffect(() => {
     alldisease();
@@ -19,53 +21,65 @@ const Setttingup = props => {
   const alldisease = async () => {
     try {
       const url = `${Api}/Addnushka/showAllDisease`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch diseases');
+      }
       const data = await response.json();
-      console.log(data);
       setDisease(data);
     } catch (error) {
-      console.error('Error:', error);
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+      console.error('Error fetching diseases:', error.message);
+      Alert.alert('Error', 'Failed to fetch diseases. Please try again.');
     }
   };
+
   const getNuskha = async () => {
     try {
       const diseaseIdString = selectedDisease.join(',');
-      console.warn(diseaseIdString);
-
       const url = `${Api}/Addnushka/SearchNushka?diseaseIds=${encodeURIComponent(
         diseaseIdString,
       )}`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
+      const response = await fetch(url);
       if (!response.ok) {
-        throw new Error('Failed to fetch data'); // Handle non-200 response
+        throw new Error('Failed to fetch Nuskha data');
       }
-
       const responseData = await response.json();
-
       if (responseData && responseData.length > 0) {
-        // Navigate to PatientHome screen with the fetched data
-        props.navigation.navigate('PatientHome', {data: responseData, id});
+        const temp = datanushka;
+        temp.orderbynushka = responseData;
+        setdata(temp);
+        Getorderhakeem();
       } else {
-        // Show alert if no data is returned
-        Alert.alert('No information found');
-        console.error('No information found');
+        Alert.alert('No Nuskha information found');
       }
     } catch (error) {
-      console.error('Error:', error);
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+      console.error('Error fetching Nuskha:', error.message);
+      Alert.alert('Error', 'Failed to fetch Nuskha data. Please try again.');
+    }
+  };
+
+  const Getorderhakeem = async () => {
+    try {
+      const diseaseIdString = selectedDisease.join(',');
+      const url = `${Api}/Addnushka/Searchhakeem?diseaseIds=${encodeURIComponent(
+        diseaseIdString,
+      )}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch Hakeem data');
+      }
+      const responseData = await response.json();
+      if (responseData && responseData.length > 0) {
+        const temp = datanushka;
+        temp.orderbyhakem = responseData;
+        setdata(temp);
+        props.navigation.navigate('PatientHome', {data: datanushka, id});
+      } else {
+        Alert.alert('No Hakeem information found');
+      }
+    } catch (error) {
+      console.error('Error fetching Hakeem:', error.message);
+      Alert.alert('Error', 'Failed to fetch Hakeem data. Please try again.');
     }
   };
 
@@ -84,8 +98,6 @@ const Setttingup = props => {
           width="100%"
         />
 
-        {/* Gender selection */}
-
         {/* Done Button */}
         <TouchableOpacity onPress={getNuskha} style={styles.button}>
           <Text style={styles.buttonText}>Done</Text>
@@ -96,26 +108,6 @@ const Setttingup = props => {
 };
 
 const styles = {
-  label: {
-    color: 'black',
-    fontSize: 18,
-    marginBottom: 8,
-    marginRight: 20,
-  },
-  radioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  radioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  radioText: {
-    color: 'black',
-    fontSize: 16,
-  },
   button: {
     backgroundColor: '#00A040',
     width: 200,

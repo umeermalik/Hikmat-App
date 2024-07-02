@@ -5,8 +5,8 @@ import Api from './Api';
 
 const SeeAllCommentRate = props => {
   const {Id, name} = props.route.params;
-  console.log(Id); // Destructure the ID from route params
-  const [comments, setComments] = useState([]); // Initialize comments state
+  console.log(Id);
+  const [comments, setComments] = useState([]);
 
   const fetchComments = async () => {
     try {
@@ -27,9 +27,8 @@ const SeeAllCommentRate = props => {
     }
   };
 
-  // Run fetchComments when component mounts and when Id changes
   useEffect(() => {
-    fetchComments(); // Call the function instead of just referencing it
+    fetchComments();
   }, []);
   const renderItem = ({item}) => (
     <View style={styles.commentContainer}>

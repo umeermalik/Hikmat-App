@@ -96,22 +96,7 @@ const AddProducts = props => {
         placeholder="Product Name"
         style={styles.input}
       />
-      <View style={styles.radioContainer}>
-        <RadioButton.Group onValueChange={handleGenderChange} value={gender}>
-          <View style={styles.radioOption}>
-            <RadioButton value="Male" />
-            <Text style={styles.radioText}>Male</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="Female" />
-            <Text style={styles.radioText}>Female</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="Both" />
-            <Text style={styles.radioText}>Both</Text>
-          </View>
-        </RadioButton.Group>
-      </View>
+
       <TextInput
         value={price}
         onChangeText={text => setPrice(text)}

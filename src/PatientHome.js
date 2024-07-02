@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,42 @@ import {
 } from 'react-native';
 import {SliderBox} from 'react-native-image-slider-box';
 import StarRating from 'react-native-star-rating';
+import {RadioButton} from 'react-native-paper';
 
 const PatienHome = props => {
   const {data, id} = props.route.params;
+  console.log(data, 'okkk');
+  const [filteredData, setFilteredData] = useState(data.orderbynushka);
+  const [nuskaData, setNuskaData] = useState(data.orderbynushka);
+  console.log(data);
+  const [searchQuery, setSearchQuery] = useState('');
+  const handleorder = value => {
+    setorderview(value);
+    if (value == 'Nushka') {
+      setNuskaData(data.orderbynushka);
+      setFilteredData(data.orderbynushka);
+    } else {
+      setNuskaData(data.orderbyhakem);
+      setFilteredData(data.orderbyhakem);
+    }
+  };
+  const handleSearch = query => {
+    setSearchQuery(query);
+    if (query === '') {
+      setFilteredData(nuskaData); // If search query is empty, reset to original data
+    } else {
+      const lowercasedQuery = query.toLowerCase();
+      const filtered = nuskaData.filter(
+        item =>
+          item.NuskhaName.toLowerCase().includes(lowercasedQuery) ||
+          item.DiseaseName.toLowerCase().includes(lowercasedQuery) ||
+          item.DiseaseTage.toLowerCase().includes(lowercasedQuery) ||
+          item.HakeemName.toLowerCase().includes(lowercasedQuery),
+      );
+      setFilteredData(filtered);
+    }
+  };
+  const [Handleorder, setorderview] = useState('Nushka'); // Initialize with 'Nushka'
 
   // Define images for the slider
   const images = [
@@ -49,13 +82,40 @@ const PatienHome = props => {
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <TextInput style={styles.searchInput} placeholder="Search" />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
       </View>
+      <View>
+        <Text style={{marginLeft: '3%'}}>Order by</Text>
+      </View>
+      <View style={styles.radioContainer}>
+        <RadioButton.Group onValueChange={handleorder} value={Handleorder}>
+          <View style={styles.radioOption}>
+            <RadioButton value="Nushka" />
+            <Text style={styles.radioText}> Nushka</Text>
+          </View>
+          <View style={styles.radioOption}>
+            <RadioButton value="Hakeem" />
+            <Text style={styles.radioText}> hakeem</Text>
+          </View>
+        </RadioButton.Group>
+      </View>
+
+      {/* Open My Chats Button */}
+      <TouchableOpacity
+        style={styles.openChatsButton}
+        onPress={() => props.navigation.navigate('Chatlist', {userid: id})}>
+        <Text style={styles.openChatsButtonText}>Open My Chats</Text>
+      </TouchableOpacity>
 
       {/* Content */}
       <FlatList
         style={styles.flatListContainer}
-        data={data}
+        data={filteredData}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <TouchableOpacity
@@ -64,6 +124,8 @@ const PatienHome = props => {
               props.navigation.navigate('Remedy', {
                 Nuskhaid: item.Nuskhaid,
                 Nuskhaname: item.NuskhaName,
+                Hakeemid: item.hakeemid,
+                hakeemUserId: item.hakeemUserId,
                 id,
               })
             }>
@@ -74,6 +136,10 @@ const PatienHome = props => {
               <Text style={styles.remedySubtitle}>
                 Hakeem name: {item.HakeemName}
               </Text>
+              <Text style={styles.remedySubtitle}>
+                Tags: {item.DiseaseTage}
+              </Text>
+
               <Text style={styles.remedySubtitle}>
                 Nuskha: {item.NuskhaName}
               </Text>
@@ -87,6 +153,9 @@ const PatienHome = props => {
                 emptyStarColor={'#d3d3d3'}
                 containerStyle={styles.starContainer}
               />
+              <View style={{marginLeft: '32%', marginTop: '-6%'}}>
+                <Text>{item.RatingCount}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -99,6 +168,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+    alignItems: 'center', // Align items vertically
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  radioText: {
+    fontSize: 18,
+    marginLeft: 5,
+    color: '#333', // Color for radio button text
+  },
+  radioCircle: {
+    height: 24,
+    width: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#00A040', // Border color for radio button
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedRadioCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#00A040', // Background color when radio button is selected
   },
   header: {
     backgroundColor: '#00A040',
@@ -124,6 +223,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderWidth: 1,
     borderColor: '#d3d3d3',
+  },
+  openChatsButton: {
+    backgroundColor: '#00A040',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 20,
+    marginHorizontal: '5%',
+  },
+  openChatsButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   flatListContainer: {
     paddingHorizontal: 10,

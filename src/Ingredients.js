@@ -15,6 +15,7 @@ const Addingredients = props => {
   var i_id;
   const {data, id, name} = props.route.params;
   var r_id = data;
+  console.log(r_id, 'okay id');
   const [Publicity, setpublicity] = useState('');
 
   const [quantity, setquantity] = useState('');
@@ -117,6 +118,18 @@ const Addingredients = props => {
           value={unit}
           onChangeText={text => setunit(text)}
         />
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('update', {r_id})}
+          style={{width: '60%', marginLeft: '45%'}}>
+          <Text
+            style={{
+              color: 'blue',
+              fontSize: 13,
+              textDecorationLine: 'underline',
+            }}>
+            click here to see all Ingredient
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>

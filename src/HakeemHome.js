@@ -44,6 +44,15 @@ const HakeemHhome = props => {
               source={require('../src/assets/buy.jpg')}
             />
             <Text style={styles.optionText}>View Remedy</Text>
+          </TouchableOpacity>{' '}
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate('ViewRemedy', {id, name})}
+            style={styles.option}>
+            <Image
+              style={styles.optionImage}
+              source={require('../src/assets/buy.jpg')}
+            />
+            <Text style={styles.optionText}>View Remedy</Text>
           </TouchableOpacity>
         </View>
         {/* Uncomment and style the second row as needed */}

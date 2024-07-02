@@ -8,17 +8,26 @@ import {
   FlatList,
   ScrollView,
   Alert,
+  Modal,
 } from 'react-native';
 import Api from './Api';
 import StarRating from 'react-native-star-rating';
 
 const Remedy = props => {
-  const {id, Nuskhaid, Nuskhaname} = props.route.params;
-  const [rating, setRating] = useState(3);
+  const {id, Nuskhaid, Nuskhaname, Hakeemid, hakeemUserId} = props.route.params;
+  console.log(props.route.params);
+  const [hakeemids, sethakeemids] = useState(Hakeemid);
+  console.log(Hakeemid, 'this is hakeem id ');
+  console.log(id, 'userid');
+  console.log(Hakeemid);
+  const [nuskaRating, setNuskaRating] = useState(0);
+  const [Rate, setrating] = useState(0);
+  const [hakeemRating, setHakeemRating] = useState(0);
   const [steps, setSteps] = useState([]);
   const [comment, setComment] = useState('');
   const [usage, setUsage] = useState([]);
   const [ingredientDetail, setIngredientDetail] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const Ratingcomments = async () => {
     try {
@@ -26,7 +35,7 @@ const Remedy = props => {
       const formData = new FormData();
       formData.append('n_id', Nuskhaid);
       formData.append('u_id', id);
-      formData.append('rating', rating);
+      formData.append('rating', nuskaRating);
       formData.append('comments', comment);
 
       const response = await fetch(url, {
@@ -43,6 +52,64 @@ const Remedy = props => {
         Alert.alert('Success', 'Rating and comments added successfully');
       } else {
         Alert.alert('Error', 'Failed to add rating and comments.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+  const rateingredients = async () => {
+    try {
+      const url = `${Api}/Addnushka/AddingRating`;
+      const formData = new FormData();
+      formData.append('u_id', id);
+      formData.append('ii_id', ingredientDetail.nushkaingreid);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert('Success', 'Rating ');
+      } else {
+        Alert.alert('Error', 'Failed to add rating .');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+  console.log(ingredientDetail, 'okay');
+  const hakeemrate = async () => {
+    try {
+      const url = `${Api}/Addnushka/HakeemRating?user_id=${id}&h_id=${1}&rating=${hakeemRating}`;
+
+      // Logging the URL
+      console.log('Request URL:', url);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Logging Response
+      const responseText = await response.text();
+      console.log('Response status:', response.status);
+      console.log('Response body:', responseText);
+
+      if (response.ok) {
+        Alert.alert('Success', 'Rating added successfully');
+      } else {
+        Alert.alert('Error', responseText); // Display detailed error
       }
     } catch (error) {
       console.error('Error:', error);
@@ -77,6 +144,7 @@ const Remedy = props => {
         },
       });
       const data = await response.json();
+      console.log(data);
       setIngredientDetail(data);
     } catch (error) {
       console.error('Error:', error);
@@ -115,9 +183,27 @@ const Remedy = props => {
 
   const renderIngredientItem = ({item}) => (
     <View style={styles.listItem}>
-      <Text style={styles.listText}>
-        {item.IngredientName} ({item.ingredientquantity} {item.ingredientunit})
-      </Text>
+      <TouchableOpacity
+        onPress={() =>
+          props.navigation.navigate('ingredientRating', {
+            ingredientid: item.nushkaingreid,
+            id,
+          })
+        }>
+        <Text style={styles.listText}>
+          {item.nushkaingreid} {item.IngredientName} ({item.ingredientquantity}
+          {item.ingredientunit})
+        </Text>
+        <StarRating
+          disabled={false}
+          maxStars={5}
+          rating={item.ingredientrate}
+          starSize={20}
+          fullStarColor={'#FFD700'}
+          emptyStarColor={'#d3d3d3'}
+          containerStyle={styles.starContainer}
+        />
+      </TouchableOpacity>
     </View>
   );
 
@@ -126,6 +212,14 @@ const Remedy = props => {
       <Text style={styles.listText}>{item.Nuskhausage}</Text>
     </View>
   );
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const submitHakeemRating = () => {
+    toggleModal();
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -160,16 +254,24 @@ const Remedy = props => {
 
       <View style={styles.divider} />
 
-      <Text style={styles.subHeading}>Rating</Text>
+      <Text style={styles.subHeading}>Nuska Rating</Text>
       <StarRating
-        selectedStar={setRating}
+        selectedStar={setNuskaRating}
         disabled={false}
         maxStars={5}
-        rating={rating}
+        rating={nuskaRating}
         starSize={30}
         fullStarColor={'gold'}
         emptyStarColor={'gray'}
       />
+
+      <View style={styles.divider} />
+
+      <TouchableOpacity onPress={toggleModal}>
+        <Text style={styles.hakeemRatingText}>
+          Click here to rate Ingredients
+        </Text>
+      </TouchableOpacity>
 
       <View style={styles.divider} />
 
@@ -181,13 +283,24 @@ const Remedy = props => {
           placeholderTextColor="gray"
           onChangeText={setComment}
         />
-        <TouchableOpacity onPress={Ratingcomments} style={styles.submitButton}>
+        <TouchableOpacity
+          onPress={Ratingcomments}
+          style={[styles.modalButton, styles.submitButton]}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.divider} />
-
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          props.navigation.navigate('Chat', {
+            userid: id,
+            receiverid: hakeemUserId,
+          })
+        }>
+        <Text style={styles.buttonText}>Chat With Hakeem</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => props.navigation.navigate('Forums', {Nuskhaid, id})}
         style={styles.button}>
@@ -200,6 +313,39 @@ const Remedy = props => {
         style={[styles.button, styles.secondaryButton]}>
         <Text style={styles.buttonText}>See Products</Text>
       </TouchableOpacity>
+
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={isModalVisible}
+        onRequestClose={toggleModal}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalHeading}>Ingredients Rating</Text>
+            <StarRating
+              selectedStar={setrating}
+              disabled={false}
+              maxStars={5}
+              rating={Rate}
+              starSize={30}
+              fullStarColor={'gold'}
+              emptyStarColor={'gray'}
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={toggleModal}
+                style={[styles.modalButton, styles.cancelButton]}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={rateingredients}
+                style={[styles.modalButton, styles.submitButton]}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -256,7 +402,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  submitButton: {
+  submitButtons: {
     backgroundColor: '#00A040',
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -287,6 +433,46 @@ const styles = StyleSheet.create({
   secondaryButton: {
     width: 200,
     marginLeft: 150,
+  },
+  hakeemRatingText: {
+    fontSize: 18,
+    color: '#00A040',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    marginBottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalHeading: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#ccc',
+  },
+  submitButton: {
+    backgroundColor: '#00A040',
   },
 });
 

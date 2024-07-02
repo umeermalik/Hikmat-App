@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,15 +10,17 @@ import {
   Alert,
 } from 'react-native';
 import Api from './Api';
+import {Button} from 'react-native-paper';
 
-const Viewremedy = props => {
-  const {name, id} = props.route.params;
+const RemedyUpdateAndViewsite = props => {
+  const {nushkaid} = props.route.params;
+  console.log(nushkaid);
   const [namee, setames] = useState([]);
-
-  //Api getremedy function
-  const GetNuskha = async () => {
+  const GetNuskhaDetail = async () => {
     try {
-      const response = await fetch(`${Api}/Addnushka/GetAllRemedy?id=${id}`);
+      const response = await fetch(
+        `${Api}/Addnushka/GetNushkadetailsForUpgrade?n_id=${nushkaid}`,
+      );
       const data = await response.json();
       console.log(data);
       setames(data);
@@ -27,45 +29,21 @@ const Viewremedy = props => {
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
-
   useEffect(() => {
-    GetNuskha();
+    GetNuskhaDetail();
   }, []);
-
   const renderItem = ({item, index}) => (
     <TouchableOpacity
-      onPress={() =>
-        props.navigation.navigate('RemedyUpdateAndViewsite', {
-          nushkaid: item.id,
-        })
-      }
       style={[styles.itemContainer, {marginTop: index === 0 ? 20 : 0}]}>
       <View style={styles.itemContent}>
         <View style={styles.itemDetails}>
-          <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.subtitle}>Hakeem: {name}</Text>
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.navigate('comments', {Id: item.id, name, id})
-            }
-            style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>See Comments & Replies</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.navigate('AddProducts', {Id: item.id, name, id})
-            }
-            style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Add Product</Text>
-          </TouchableOpacity>
+          <Text style={styles.title}>{item.NuskhaName}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
-
   return (
     <View style={styles.container}>
-      <TextInput style={styles.searchInput} placeholder="Search" />
       <FlatList
         data={namee}
         keyExtractor={(item, index) => index.toString()}
@@ -75,7 +53,6 @@ const Viewremedy = props => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -142,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Viewremedy;
+export default RemedyUpdateAndViewsite;
